@@ -2,6 +2,8 @@
 
 A Cloud Function to post Firebase Test Lab results to Slack
 
+Largely borrowed from: https://github.com/firebase/functions-samples/tree/main/testlab-to-slack
+
 1. Clone or download this repo and open the `cloud-functions-slack`
    directory.
 2. You must have the Firebase CLI installed. If you don't have it install it
@@ -11,6 +13,8 @@ A Cloud Function to post Firebase Test Lab results to Slack
    project in the list.
 4. Install Cloud Functions dependencies locally by running:
    `cd functions; npm install; cd -`
+5. Set the following environment variables so that the function can authenticate with Slack and post to the correct room:
+   ```firebase functions:config:set slack.webhook_url="YOUR_SLACK_WEBHOOK_URL"```
 
 ## Deploy and test
 
