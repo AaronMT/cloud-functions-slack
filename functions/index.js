@@ -22,20 +22,32 @@ function postToSlack(title, details) {
                         type: 'mrkdwn',
                         text: details
                     }
+                },
+                {
+                    type: 'divider'
+                },
+                {
+                    type: 'context',
+                    elements: [
+                        {
+                            type: 'mrkdwn',
+                            text: ':testops-notify: created by <https://mana.mozilla.org/wiki/x/P_zNBw|Mobile Test Engineering>'
+                        }
+                    ]
                 }
             ]
         }
     );
   }
 
-function getSlackmoji(term) {
+function getSlackEmoji(term) {
     switch (term) {
         case 'SUCCESS':
             return ':tada:';
         case 'FAILURE':
             return ':broken_heart:';
         case 'INCONCLUSIVE':
-            return ':question:';
+            return ':large_orange_circle:';
         case 'SKIPPED':
             return ':arrow_heading_down:';
         case 'VALIDATING':
@@ -60,18 +72,18 @@ exports.postTestResultsToSlack = functions.testLab
   .onComplete(async testMatrix => {
     const { testMatrixId, createTime, state, outcomeSummary, clientInfo } = testMatrix;
 
-    const title = `${getSlackmoji(state)} ${getSlackmoji(
+    const title = `${getSlackEmoji(state)} ${getSlackEmoji(
         outcomeSummary
       )} ${testMatrixId}`;
 
-    const details = `Status: *${state}* ${getSlackmoji(
+    const details = `Status: *${state}* ${getSlackEmoji(
         state
-      )}\nOutcome: *${outcomeSummary}* ${getSlackmoji(outcomeSummary)}
+      )}\nOutcome: *${outcomeSummary}* ${getSlackEmoji(outcomeSummary)}
       \nCreated: *${createTime}*\nPull Request: *${clientInfo.details['pullRequest']}*
       `;
 
     switch (outcomeSummary) {
-        case 'FAILURE':
+        case 'INCONCLUSIVE':
             const slackResponse = await postToSlack(title, details);
             functions.logger.log(JSON.stringify(slackResponse.data));
         default:
